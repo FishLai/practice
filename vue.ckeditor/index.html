@@ -8,28 +8,64 @@
   <!-- bootstrap css -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
   <!-- <link rel="stylesheet" href="https://fishlai.github.io/docs/assets/css/bootstrap-4.5.0.min.css"> -->
+  <style type="text/css">
+    .block {
+      border: 2.5px dashed pink;
+      border-radius: 10px;
+    }
+  </style>
 </head>
 <body>
   <div class="container-fluid">
   	<div class="row row-cols-1">
   	  <div class="col">
         <div class="row">
-          <div class="col-3">left nav side</div>
-          <div class="col-7">center main content
-            <h1><strong>Implement Ckeditor Via VueJS</strong></h1>
-            <div class="col">
-              <h6>record the reason :</h6>
-              <p>Because I want to apply ckeditor to my own which is created by django vue framework. To prepare ckeditor and look the effect, I post this static page.</p>
-            </div>
-            <div class="col">
-              <h3>Inline editor, one of the bluids in ckeditor</h3>
-              <p>After I quickly read the document of CKeditor Bluids, I think inline editor maybe the one I want. This can only input subtitle or edit paragraph and insert images at the same time</p>
-              <div id="editor1">
-                <p>hello i am defualt inline editor, click here to start to edit</p>
+          <div class="col-md-3">left nav side</div>
+          <div class="col-md-7">center main content
+            <div class="row">
+              <div class="col">
+                <h1><strong>Implement Ckeditor Via VueJS</strong></h1>
               </div>
             </div>
+            <div class="row">
+              <div class="col">
+                <h6>record the reason :</h6>
+                <p>Because I want to apply ckeditor to my own which is created by django vue framework. To prepare ckeditor and look the effect, I post this static page.</p>
+              </div>
+            </div>
+            <div id="step1" class="row">
+              <div class="col">
+                <h3>Inline editor, one of the bluids in ckeditor</h3>
+                <p>After I quickly read the document of CKeditor Bluids, I think inline editor maybe the one I want. This can only input subtitle or edit paragraph and insert images at the same time</p>
+                <div class="block">
+                <h5>START IMPLEMENT DEFAULT INLINE EDITOR</h5>
+                <div id="editor1">
+                  <p>hello i am defualt inline editor, click here to start to edit</p>
+                </div>
+                <h5>END</h5>
+                </div>
+                <p>
+                  There are some methods to interact with the editor<br>
+                  Like editor.setData(), .destroy(), .model.document.on( 'change:data', () => {...} );
+                </p>
+                <p>I would like to know the available items in toolbar, and they are ... ...</p>
+                <p id="array_tools"></p>
+              </div>
+            </div>
+            <div id="step2" class="row">
+              <div class="col">
+                <h3>Looking for the tool effect</h3>
+                <!-- Available tools, selectAll, undo, redo, bold, italic, blockQuote, ckfinder, imageTextAlternative, imageUpload, heading, imageStyle:full, imageStyle:side, indent, outdent, link, numberedList, bulletedList, mediaEmbed, insertTable, tableColumn, tableRow, mergeTableCells, -->
+                <p>Perhaps I need bold, italic, blockQuote, imageTextAlternative, imageUpload, heading, imageStyle:full, imageStyle:side, link, mediaEmbed, insterTable, tableColumn, tableRow, mergeTableCells</p>
+                <div id="editor2">
+                  <p>hello, it's second inline editor</p>
+                </div>
+              </div>
+            </div>
+            <div class="row"></div>
+            <div class="row"></div>
           </div>
-          <div class="col-2">right map side</div>
+          <div class="col-md-2">right map side</div>
   	    </div>
   	  </div>
   	  <div class="col">
@@ -43,13 +79,33 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/vue"></script>
   <script src="https://cdn.ckeditor.com/ckeditor5/20.0.0/inline/ckeditor.js"></script>
+  <script src="https://ckeditor.com/apps/ckfinder/3.5.0/ckfinder.js"></script>
 
   <script tye="text/javascript">
+    
     InlineEditor
       .create( document.querySelector('#editor1') )
-      .catch( error => {
+        .then( editor => {
+        const ls_tools = Array.from( editor.ui.componentFactory.names() );
+        for ( tool of ls_tools ) {
+          document.getElementById('array_tools').innerHTML += tool + ', ';
+        };
+      }).catch( error => {
         console.error( error );
-     } ); 
+     } );
+    /* Available tools, selectAll, undo, redo, bold, italic, blockQuote, ckfinder, imageTextAlternative, imageUpload, heading, imageStyle:full, imageStyle:side, indent, outdent, link, numberedList, bulletedList, mediaEmbed, insertTable, tableColumn, tableRow, mergeTableCells, */
+    InlineEditor
+      .create( document.querySelector('#editor2'), {
+        toolbar: ['heading', '|', 'bold', 'italic', 'blockQuote', 'ckfinder', 'imageUpload', 'link', 'mediaEmbed', 'insertTable', 'undo', 'redo'],
+        ckfinder: {
+          uploadUrl: '/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json',
+          options: {
+            resourceType: 'Images'
+          }
+        }
+      } ).catch( error => {
+        console.error( error );
+      })
   </script>
 
 </body>
