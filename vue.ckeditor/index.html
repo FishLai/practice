@@ -81,12 +81,53 @@
   <script src="https://cdn.ckeditor.com/ckeditor5/20.0.0/inline/ckeditor.js"></script>
   <script src="https://ckeditor.com/apps/ckfinder/3.5.0/ckfinder.js"></script>
 
-  <script tye="text/javascript">
-    
+  <script type="text/javascript">
+    // Make a simple adapter
+    class MyImageUploadAdapter {
+      constructor( loader ) {
+        this.loader = loader;
+      };
+
+      // start upload process
+      upload () {
+        return new Promise( (resolve, reject ) => {
+          const reader = this.reader = new FileReader();
+          reader.addEventListener( 'load', () => {
+            resolve( { default: reader.result } );
+          } );
+
+          reader.addEventListener( 'error', err => {
+            reject( err );
+          } );
+
+          reader.addEventListener( 'abort', () => {
+            reject();
+          } );
+
+          this.loader.file.then( file => {
+            reader.readAsDataURL( file );
+          } );
+        } );
+      }
+
+      // start abort process
+
+      abort() {
+        this.reader.abort();
+      }
+    }
+
+    function MyCustomUploadAdapterPlugin ( editor ) {
+      editor.plugins.get( 'FileRepository' ).createUploadAdapter = ( loader ) => {
+        return new MyImageUploadAdapter( loader );
+      };
+    }
+    // import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
     InlineEditor
       .create( document.querySelector('#editor1') )
         .then( editor => {
         const ls_tools = Array.from( editor.ui.componentFactory.names() );
+        console.log( ls_tools.length );
         for ( tool of ls_tools ) {
           document.getElementById('array_tools').innerHTML += tool + ', ';
         };
@@ -96,13 +137,15 @@
     /* Available tools, selectAll, undo, redo, bold, italic, blockQuote, ckfinder, imageTextAlternative, imageUpload, heading, imageStyle:full, imageStyle:side, indent, outdent, link, numberedList, bulletedList, mediaEmbed, insertTable, tableColumn, tableRow, mergeTableCells, */
     InlineEditor
       .create( document.querySelector('#editor2'), {
+        extraPlugins: [ MyCustomUploadAdapterPlugin ],
         toolbar: ['heading', '|', 'bold', 'italic', 'blockQuote', 'ckfinder', 'imageUpload', 'link', 'mediaEmbed', 'insertTable', 'undo', 'redo'],
         ckfinder: {
-          uploadUrl: 'https://fishlai.github.io/practice/vue.ckeditor/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json',
           options: {
             resourceType: 'Images'
           }
         }
+      } ).then( editor => {
+        console.log( Array.from( editor.ui.componentFactory.names() ).length );
       } ).catch( error => {
         console.error( error );
       })
