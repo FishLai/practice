@@ -66,7 +66,30 @@
                 </div>
               </div>
             </div>
-            <div class="row"></div>
+            <div id="step3" class="row">
+              <div class="col">
+                <h3>Implement via VueJS</h3>
+                <div class="block">
+                  <h5>Start</h5>
+                  <div id="app">
+                    <ckeditor
+                      editor="inline"
+                      tag-name="div"
+                      v-model="editorData"
+                      :editor="editor"
+                      :config="editorConfig"
+                      :disabled="editorDisabled"
+                      @ready="onEditorReady"
+                      @focus="onEditorFocus"
+                      @blur="onEditorBlur"
+                      @input="onEditorInput"
+                      @destory="onEditorDestroy"
+                    ></ckeditor>
+                  </div>
+                  <h5>End</h5>
+                </div>
+              </div>
+            </div>
             <div class="row"></div>
           </div>
           <div class="col-md-2">right map side</div>
@@ -84,6 +107,7 @@
   <script src="https://cdn.jsdelivr.net/npm/vue"></script>
   <script src="https://cdn.ckeditor.com/ckeditor5/20.0.0/inline/ckeditor.js"></script>
   <script src="https://ckeditor.com/apps/ckfinder/3.5.0/ckfinder.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.19/lodash.min.js"></script>
 
   <script type="text/javascript">
     // Make a simple adapter
@@ -153,6 +177,133 @@
       } ).catch( error => {
         console.error( error );
       })
+
+    const com_ckeditor = {
+      name: 'ckeditor-inline',
+      render( createElement ) { 
+        return createElement( this.tagName );
+       },
+       props: {
+        editor: {
+          type: Function,
+          default: null
+        },
+        value: {
+          type: String,
+          default: ''
+        },
+        config: {
+          type: Object,
+          default: () => ( {} )
+        },
+        tagName: {
+          type: String,
+          default: 'div'
+        },
+        disabled: {
+          type: Boolean,
+          default: false
+        }
+      },
+
+      data() {
+        return {
+          instance: null,
+          $_lastEditorData: {
+            type: String,
+            default: ''
+          }
+        };
+      },
+
+      mounted() {
+        const editorConfig = Object.assign( {}, this.config );
+        if ( this.value ) {
+          editorConfig.initialData = this.value;
+        }
+
+        this.editor.create( this.$el, editorConfig )
+          .then( editor => {
+            this.instance = editor;
+          } )
+          .catch( error => {
+            console.error( error );
+          } );
+      },
+
+      beforeDestroy() {
+        if ( this.instance ) {
+          this.instance.destroy();
+          this.instance = null;
+        }
+
+        this.$emit( 'destroy', this.instance );
+      },
+
+      watch: {
+        value( newValue, oldValue ) {
+          if ( newValue !== oldValue && newValue !== this.$_lastEditorData ) {
+            this.instance.setData( newValue );
+          }
+        }
+      },
+
+      methods: {
+        $_setUpEditorEvents() {
+          const editor = this.instance;
+          const emitInputEvent = evt => {
+            const data = this.$_lastEditorData = editor.getData();
+
+            this.$emit( 'input', data, evt, editor );
+          };
+
+          editor.model.document.on( 'chge:data', debounce( emitInputEvent, 300) );
+          editor.editing.view.document.on( 'focus', evt => {
+            this.$emit( 'focus', evt, editor );
+          } );
+
+          editor.editing.view.document.on( 'blur', evt => {
+            this.$emit( 'blur', evt, editor );
+          } );
+        }
+      }
+    };
+
+    const app = new Vue( {
+      el: '#app',
+      data: {
+        editor: InlineEditor,
+        editorData: '<p>Hello world!</p>',
+        editorConfig: { extraPlugins: [ MyCustomUploadAdapterPlugin ], toolbar: [ 'heading', '|', 'bold', 'italic', 'imageUpload' ] },
+        editorDisabled: false
+      },
+      components: {
+        ckeditor: com_ckeditor
+      },
+      methods: {
+        toggleEditorDisabled() {
+          this.editorDisabled = !this.editorDisabled;
+        },
+        destroyApp() {
+          app.$destroy();
+        },
+        onEditorReady( editor ) {
+          console.log( 'Editor is ready.', { editor } );
+        },
+        onEditorFocus( event, editor ) {
+          console.log( 'Editor focused.', { event, editor } );
+        },
+        onEditorBlur( event, editor ) {
+          console.log( 'Editor blurred.', { event, editor } );
+        },
+        onEditorInput( data, event, editor ) {
+          console.log( 'Editor data input', { event, editor, data } );
+        },
+        onEditorDestroy( editor ) {
+          console.log( 'Editor destroyed.', { editor } );
+        }
+      }
+    } );
   </script>
 
 </body>
