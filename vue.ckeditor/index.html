@@ -95,7 +95,7 @@
                 <h3>Implement via VueJS</h3>
                 <div class="block">
                   <h5>Start</h5>
-                  <div id="app">
+                  <div id="app_ckeditor">
                     <ckeditor
                       ref="editor3"
                       editor="inline"
@@ -332,7 +332,6 @@
       methods: {
         
         $_setUpEditorEvents() {
-          console.log('i am doing something');
           const editor = this.instance;
           const emitInputEvent = evt => {
             const data = this.$_lastEditorData = editor.getData();
@@ -356,7 +355,7 @@
     //  VueJS instance for CKEditor
     */
     const app_ckeditor = new Vue( {
-      el: '#app',
+      el: '#app_ckeditor',
       data: {
         editor: InlineEditor,
         editorData: '<p>Hello world!</p>',
