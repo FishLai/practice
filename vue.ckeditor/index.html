@@ -110,6 +110,9 @@
                       @input="onEditorInput"
                       @destory="onEditorDestroy"
                     ></ckeditor>
+
+                    <h3>live input data</h3>
+                    <textarea v-model="editorData"></textarea>
                   </div>
                   <h5>End</h5>
                 </div>
@@ -224,7 +227,6 @@
       .create( document.querySelector('#editor1') )
         .then( editor => {
         const ls_tools = Array.from( editor.ui.componentFactory.names() );
-        console.log( ls_tools.length );
         for ( tool of ls_tools ) {
           document.getElementById('array_tools').innerHTML += tool + ', ';
         };
@@ -244,8 +246,6 @@
             resourceType: 'Images'
           }
         }
-      } ).then( editor => {
-        console.log( Array.from( editor.ui.componentFactory.names() ).length );
       } ).catch( error => {
         console.error( error );
       })
@@ -254,6 +254,10 @@
     */
     const com_ckeditor = {
       name: 'ckeditor',
+// <<<<<<< HEAD
+      // render founction return the virtual DOM
+//=======
+//>>>>>>> a37807276abd4e23e65b8baa8cd649c69e15f8f1
       render( createElement ) { 
         return createElement( this.tagName );
        },
@@ -339,7 +343,11 @@
             this.$emit( 'input', data, evt, editor );
           };
 
+//<<<<<<< HEAD
+          //editor.model.document.on( 'change:data', debounce( emitInputEvent, 300) );
+//=======
           editor.model.document.on( 'change:data', _.debounce( emitInputEvent, 300) );
+//>>>>>>> a37807276abd4e23e65b8baa8cd649c69e15f8f1
           editor.editing.view.document.on( 'focus', evt => {
             this.$emit( 'focus', evt, editor );
           } );
