@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>practice carousel</title>
+
+	<!-- 
+		bootstrap css -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+	<style>
+		/* 
+		css for all element */
+		* {
+			-webkit-box-sizing: border-box;
+			-moz-box-sizing: border-box;
+        	box-sizing: border-box;
+        }
+        
+        /*
+          css for wrap container */
+        .myslider {
+          width: 300px;
+          text-align: center;
+          overflow: hidden;
+        }
+
+        /*
+          css for each slides container */
+        .myslides {
+          display: flex;
+          
+          overflow-x: auto;
+          scroll-snap-type: x mandatory;
+          
+          scroll-behavior: smooth;
+          -webkit-overflow-scrolling: touch;
+        }
+
+        /*
+          css for scrollbar in chrome */
+        .myslides::-webkit-scrollbar {
+          width: 10px;
+          height: 10px;
+        }
+        .myslides::-webkit-scrollbar-thumb {
+          background: black;
+          border-radius: 10px;
+        }
+        .myslides::-webkit-scrollbar-track {
+          background: transparent;
+        }
+
+        /*
+          css for each slide */
+        .myslides > div {
+          scroll-snap-align: start;
+          flex-shrink: 0;
+          width: 300px;
+          height: 300px;
+          margin-right: 50px;
+          border-radius: 10px;
+          background: #eee;
+          transform-origin: center center;
+          transform: scale(1);
+          transition: transform 0.5s;
+          position: relative;
+          
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          font-size: 100px;
+        }
+        .myslides > div:target {
+        /*   transform: scale(0.8); */
+        }
+        img {
+          object-fit: cover;
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+        }
+        
+        .myslider > a {
+          display: inline-flex;
+          width: 1.5rem;
+          height: 1.5rem;
+          background: white;
+          text-decoration: none;
+          align-items: center;
+          justify-content: center;
+          border-radius: 50%;
+          margin: 0 0 0.5rem 0;
+          position: relative;
+        }
+        .myslider > a:active {
+          top: 1px;
+        }
+        .myslider > a:focus {
+          background: #000;
+        }
+        
+        /* Don't need button navigation */
+        @supports (scroll-snap-type) {
+          .myslider > a {
+            display: none;
+          }
+        }
+        
+        html, body {
+          height: 100%;
+          overflow: hidden;
+        }
+        body {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          /*background: linear-gradient(to bottom, #74ABE2, #5563DE);*/
+          font-family: 'Ropa Sans', sans-serif;
+        }
+
+        /* 
+          demo each css */
+
+	</style>
+</head>
+<body>
+  <!--
+  	whole page -->
+  <div class="container-fluid">
+  	<!--
+  	  body block -->
+  	<div class="row">
+  	  <!--
+  	  	not done -->
+      <!--
+      	left hand side, main navigation -->
+      <div class="col-md-3">
+      	plan to put main navigate
+      </div>
+
+      <!--
+      	not done -->
+      <!--
+      	main content -->
+      <div class="col-md-7">
+      	<!--
+      	  main demo block -->
+      	<div>
+      	  <h3 id="demo">the slider demo</h3>
+          <!-- 
+      	    To wrap all things for slider -->
+      	  <div class="myslider">
+            <a href="#myslide-1">1</a>	
+            <a href="#myslide-2">2</a>	
+            <a href="#myslide-3">3</a>	
+            <a href="#myslide-4">4</a>	
+            <!-- 
+              make a slides container -->
+            <div class="myslides">
+              <!-- 
+                make each slide -->
+              <div class="myslide" id="myslide-1">1</div>
+              <div class="myslide" id="myslide-2">2</div>
+              <div class="myslide" id="myslide-3">3</div>
+              <div class="myslide" id="myslide-4">4</div>
+            </div>
+          </div>
+      	</div>
+      	
+      	<!--
+      	  extra demo -->
+      	<div>
+      	  <h3 id="ref1">demo css property "box-sizing"</h3>
+      	  <div class="myslider">
+      	    <p>box-sizing:</p>
+      	    <a href="#contentBoxAffect">content-box;</a>
+      	    <a href="#borderBoxAffect">border-box;</a>
+      	    <div class="myslides">
+      	  	  <div class="myslide demo-contentBox" id="contentBoxAffect">
+      	        width=300px; height=300px;
+      	  	  </div>
+      	  	  <div class="myslide" id="borderBoxAffect">
+      	  	    width=300px; height=300px;
+      	  	  </div>
+      	    </div>
+      	  </div>
+      	</div>
+      </div>
+
+      <!--
+      	not done -->
+      <!--
+      	right hand side, navigating this page content -->
+      <div class="col-md-2">
+      	plan to put vice navigation
+      </div>
+  	</div>
+
+  	<!--
+  	  not done -->
+  	<!--
+  	  footer block -->
+  	<div class="row">
+  	  plan to put footer contain
+  	</div>
+  </div>
+</body>
+</html>

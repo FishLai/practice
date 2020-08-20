@@ -254,11 +254,7 @@
     */
     const com_ckeditor = {
       name: 'ckeditor',
-// <<<<<<< HEAD
-      // render founction return the virtual DOM
-//=======
-//>>>>>>> a37807276abd4e23e65b8baa8cd649c69e15f8f1
-      render( createElement ) { 
+      render( createElement ) {
         return createElement( this.tagName );
        },
        props: {
@@ -343,11 +339,7 @@
             this.$emit( 'input', data, evt, editor );
           };
 
-//<<<<<<< HEAD
-          //editor.model.document.on( 'change:data', debounce( emitInputEvent, 300) );
-//=======
           editor.model.document.on( 'change:data', _.debounce( emitInputEvent, 300) );
-//>>>>>>> a37807276abd4e23e65b8baa8cd649c69e15f8f1
           editor.editing.view.document.on( 'focus', evt => {
             this.$emit( 'focus', evt, editor );
           } );
